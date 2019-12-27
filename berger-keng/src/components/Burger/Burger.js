@@ -1,4 +1,8 @@
 import React from 'react';
+
+// inject router props to subcomponents. Wrap exported component with withRouter(burger)
+// import { withRouter } from 'react-router-dom';
+
 import classes from './Burger.module.css';
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 

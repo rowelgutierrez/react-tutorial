@@ -1,0 +1,47 @@
+import React, { Component } from 'react';
+import axios from '../../axios-orders';
+import Order from '../../components/Order/Order';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+
+class Orders extends Component {
+    state = {
+        orders: [],
+        loading: true
+    }
+
+    async componentDidMount() {
+        const orders = [];
+
+        try {
+            const { data } = await axios.get('/orders.json');
+            for (let key in data) {
+                orders.push({
+                    ...data[key],
+                    id: key
+                });
+            }
+
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+
+        this.setState({orders, loading: false});
+    }
+
+    render() {
+        return (
+            <div>
+                {this.state.orders.map(order => (
+                    <Order
+                        key={order.id}
+                        ingredients={order.ingredients}
+                        price={order.price}
+                    />
+                ))}
+            </div>
+        );
+    }
+}
+
+export default withErrorHandler(Orders, axios);
