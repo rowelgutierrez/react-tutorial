@@ -46,7 +46,7 @@ const input = (props) => {
             );
             break;
         default:
-            inputElement = <input 
+            inputElement = <input
                 className={inputClasses.join(' ')} 
                 {...props.elementConfig} 
                 value={props.value}
