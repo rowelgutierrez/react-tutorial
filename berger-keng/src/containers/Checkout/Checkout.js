@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
@@ -14,24 +14,37 @@ class Checkout extends Component {
     }
 
     render() {
+        let summary = <Redirect to="/" />;
+
+        if (this.props.ingredients) {
+            const purchasedRedirect = this.props.purchased? <Redirect to="/" /> : null;
+
+            summary = (
+                <React.Fragment>
+                    { purchasedRedirect }
+
+                    <CheckoutSummary
+                        ingredients={this.props.ingredients}
+                        cancel={this.checkoutCancelHandler}
+                        continue={this.checkoutContinueHandler}
+                    />
+
+                    <Route
+                        path={this.props.match.path + '/contact-data'}
+                        render={(props) => (
+                            <ContactData 
+                                // ingredients={this.props.ingredients}
+                                // price={this.props.totalPrice}
+                                {...props}
+                            />
+                        )} />
+                </React.Fragment>
+            );
+        }
 
         return (
             <div>
-                <CheckoutSummary
-                    ingredients={this.props.ingredients}
-                    cancel={this.checkoutCancelHandler}
-                    continue={this.checkoutContinueHandler}
-                />
-
-                <Route
-                    path={this.props.match.path + '/contact-data'}
-                    render={(props) => (
-                        <ContactData 
-                            // ingredients={this.props.ingredients}
-                            // price={this.props.totalPrice}
-                            {...props}
-                        />
-                    )} />
+                { summary }
             </div>
         );
     }
@@ -39,7 +52,8 @@ class Checkout extends Component {
 
 const mapStateToProps = state => {
     return {
-        ingredients: state.ingredients,
+        ingredients: state.burgerBuilder.ingredients,
+        purchased: state.order.purchased
         // totalPrice: state.totalPrice
     };
 }
